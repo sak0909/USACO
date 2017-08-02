@@ -1,6 +1,6 @@
 /*
 ID: sak0909
-PROG: milk
+PROG: namenum
 LANG: C++11
 */
 
@@ -36,19 +36,41 @@ typedef stringstream SS;
 typedef istringstream ISS;
 typedef ostringstream OSS;
 
+string getHash(string name)
+{
+    OSS op;
+
+    for(char c: name){
+        if(c < 'Q')
+            op << int((c-'A')/3) + 2;
+        else
+            op << int((c-'Q')/3) + 7;
+    }
+    return op.str();
+}
+
 int main()
 {
-//    ifstream fin("milk.in");
-//    ofstream fout("milk.out");
-    ifstream fin("test.in");
-    ofstream fout("test.out");
+    ifstream fin("namenum.in");
+    ofstream fout("namenum.out");
+//    ifstream fin("test.in");
+//    ofstream fout("test.out");
+    ifstream fdict("dict.txt");
 
-    int N, M;
-    fin >> N >> M;
-
-    while(M--)
+    string ip;
+    fin >> ip;
+    string t;
+    bool found = false;
+    while(fdict >> t)
     {
-
+        if(t.length() == ip.length() && ip == getHash(t))
+        {
+            fout << t << endl;
+            found = true;
+        }
     }
+    if(!found)
+        fout << "NONE" << endl;
+
     return 0;
 }
