@@ -1,6 +1,6 @@
 /*
 ID: sak0909
-PROG: sprime
+PROG: numtri
 LANG: C++11
 */
 
@@ -43,64 +43,39 @@ typedef stringstream SS;
 typedef istringstream ISS;
 typedef ostringstream OSS;
 
-bool isPrime (int p)
+int findMax(VVI& IP, VVI& cache, int r, int c)
 {
-    if ( p % 2 == 0 || p < 1 ) return false;
+    if(r >= IP._SZ || c >= IP[r]._SZ)
+        return 0;
 
-    int len = sqrt (p * 1.0);
+    if(cache[r][c] != -1)
+        return cache[r][c];
 
-    for ( int i = 3; i <= len; i += 2 ) if ( p % i == 0 ) return false;
-    return true;
-}
-
-vector <int> primes;
-
-
-void generatePrimeRibs ()
-{
-    primes._PB(2);
-    primes._PB(3);
-    primes._PB(5);
-    primes._PB(7);
-
-    int startIndex = 0;
-    int endIndex = primes._SZ;
-
-    for(int N=2; N <= 8; ++N)
-    {
-        for(int i = startIndex; i < endIndex; ++i)
-        {
-            for(int n = 1; n <= 9; n+=2)
-            {
-                int t = primes[i] * 10 + n;
-
-                if(isPrime(t))
-                    primes._PB(t);
-            }
-        }
-        startIndex = endIndex, endIndex = primes._SZ;
-    }
-
+    cache[r][c] = IP[r][c] + max(findMax(IP, cache, r+1, c), findMax(IP, cache, r+1, c+1));
+    return cache[r][c];
 }
 
 int main()
 {
 //    ifstream fin("test.in");
 //    ofstream fout("test.out");
-    ifstream fin("sprime.in");
-    ofstream fout("sprime.out");
+    ifstream fin("numtri.in");
+    ofstream fout("numtri.out");
 
-    int N;
-    fin >> N;
+    int R;
+    fin >> R;
 
-    generatePrimeRibs();
+    VVI IP(R);
+    VVI Cache(R);
+    for(int i=0; i < R; ++i)
+        for(int j=0; j <= i; ++j)
+        {
+            int t; fin >> t;
+            IP[i]._PB(t);
+            Cache[i]._PB(-1);
+        }
 
-    for(auto num:  primes)
-    {
-        if(num >= pow10(N-1) && num < pow10(N))
-            fout << num << endl;
-    }
-
+   fout << findMax(IP, Cache, 0, 0) << endl;
 
     return 0;
 }
